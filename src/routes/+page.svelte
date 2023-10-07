@@ -5,8 +5,8 @@
 </script>
 
 <svelte:head>
-	<title>Home</title>
-	<meta name="description" content="Svelte demo app" />
+	<title>Home of BEN'S FACTS</title>
+	<meta name="description" content="Ben's facts, home of Ben's facts" />
 </svelte:head>
 
 <section>
@@ -18,14 +18,8 @@
 			</picture>
 		</span>
 
-		to your new<br />SvelteKit app
+		to Ben's facts!
 	</h1>
-
-	<h2>
-		try editing <strong>src/routes/+page.svelte</strong>
-	</h2>
-
-	<Counter />
 </section>
 
 <style>
