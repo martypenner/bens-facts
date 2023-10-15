@@ -1,5 +1,5 @@
 /**
- * The core server that runs on a Cloudflare worker.
+ * The core server.
  */
 
 import 'isomorphic-fetch';
