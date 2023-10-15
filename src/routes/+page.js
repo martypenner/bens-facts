@@ -1,15 +1,10 @@
-import { createClient } from '@vercel/kv';
+import { kv } from '@vercel/kv';
 import OpenAI from 'openai';
 import { ulid } from 'ulid';
 
 export const csr = false;
 
 const openai = new OpenAI();
-
-const kv = createClient({
-	url: import.meta.env.KV_REST_API_URL,
-	token: import.meta.env.KV_REST_API_TOKEN
-});
 
 const MAX_GENERATED_FACTS = 200;
 
@@ -44,12 +39,15 @@ export async function load() {
 
 	try {
 		const id = ulid();
-		// Store the fact
-		await kv.hset(`fact:${id}`, {
+		const factObj = {
 			id,
 			fact,
 			is_enabled: true
-		});
+		};
+		console.log('Fact being persisted:', factObj);
+
+		// Store the fact
+		await kv.hset(`fact:${id}`, factObj);
 	} catch (error) {
 		console.error('Error storing fact:', fact, error);
 	}
