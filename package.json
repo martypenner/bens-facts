@@ -1,16 +1,19 @@
 {
 	"name": "sveltekit-2",
 	"version": "0.0.1",
+	"description": "A simple discord bot and website that allows Ben's facts to be managed and viewed",
 	"scripts": {
-		"dev": "vite dev",
+		"dev": "concurrently 'vite dev' 'node -r dotenv/config src/discord-bot/server.js'",
 		"build": "vite build",
 		"preview": "vite preview",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./jsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./jsconfig.json --watch",
-		"test": "playwright test",
+		"test": "playwright test && c8 mocha test",
 		"test:unit": "vitest",
 		"lint": "prettier --plugin-search-dir . --check . && eslint .",
-		"format": "prettier --plugin-search-dir . --write ."
+		"format": "prettier --plugin-search-dir . --write .",
+		"ngrok": "ngrok http 8787",
+		"register": "node -r dotenv/config src/discord-bot/register.js"
 	},
 	"devDependencies": {
 		"@fontsource/fira-mono": "^5.0.8",
@@ -20,11 +23,19 @@
 		"@sveltejs/adapter-vercel": "^3.0.3",
 		"@sveltejs/kit": "^1.25.2",
 		"@types/cookie": "^0.5.2",
+		"c8": "^8.0.1",
+		"chai": "^4.3.10",
+		"concurrently": "^8.2.1",
+		"dotenv": "^16.3.1",
 		"eslint": "^8.51.0",
 		"eslint-config-prettier": "^9.0.0",
+		"eslint-plugin-prettier": "^5.0.1",
 		"eslint-plugin-svelte": "^2.34.0",
+		"mocha": "^10.2.0",
+		"ngrok": "^5.0.0-beta.2",
 		"prettier": "^3.0.3",
 		"prettier-plugin-svelte": "^3.0.3",
+		"sinon": "^16.1.0",
 		"svelte": "^4.2.1",
 		"svelte-check": "^3.5.2",
 		"typescript": "^5.2.2",
@@ -34,6 +45,13 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"openai": "^4.11.1"
+		"@vercel/kv": "^0.2.3",
+		"@whatwg-node/server": "^0.9.14",
+		"discord-interactions": "^3.4.0",
+		"isomorphic-fetch": "^3.0.0",
+		"itty-router": "^4.0.23",
+		"openai": "^4.11.1",
+		"rm": "^0.1.8",
+		"ulid": "^2.3.0"
 	}
 }
