@@ -126,30 +126,44 @@ export async function POST({ request }) {
 				});
 			}
 			case SELECT_COMMAND.name.toLowerCase(): {
-				const facts = await getFacts();
-				const options = facts.map(({ id, fact, is_enabled }) => {
-					fact = fact.substring(0, 97).concat('...');
-					return { label: fact, value: id, default: is_enabled };
+				// Chunk facts into multiple selects
+				// TODO: maybe multiple messages as well?
+				const CHUNK_SIZE = 5;
+				const allFacts = await getFacts();
+				const options = allFacts
+					.map(({ id, fact, is_enabled }) => {
+						fact = fact.substring(0, 97).concat('...');
+						return { label: fact, value: id, default: is_enabled };
+					})
+					.reduce((allFacts, fact, index) => {
+						const chunkIndex = Math.floor(index / CHUNK_SIZE);
+						allFacts[chunkIndex] ??= [];
+						allFacts[chunkIndex].push(fact);
+						return allFacts;
+					}, []);
+
+				// TODO: this doesn't actually work since we wipe out other settings
+				// when we receive the request with the list of enabled facts
+				const components = options.map((options, index) => {
+					return {
+						type: MessageComponentTypes.ACTION_ROW,
+						components: [
+							{
+								type: MessageComponentTypes.STRING_SELECT,
+								custom_id: `select_facts_${index + 1}`,
+								placeholder: "Choose which of Ben's facts will make the cut!",
+								min_values: 0,
+								max_values: options.length,
+								options
+							}
+						]
+					};
 				});
 
 				return new JsonResponse({
 					type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
 					data: {
-						components: [
-							{
-								type: MessageComponentTypes.ACTION_ROW,
-								components: [
-									{
-										type: MessageComponentTypes.STRING_SELECT,
-										custom_id: 'select_facts',
-										placeholder: "Choose which of Ben's facts will make the cut!",
-										min_values: 1,
-										max_values: facts.length,
-										options
-									}
-								]
-							}
-						],
+						components,
 						flags: InteractionResponseFlags.EPHEMERAL
 					}
 				});
