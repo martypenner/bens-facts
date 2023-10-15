@@ -3,7 +3,7 @@
 	"version": "0.0.1",
 	"description": "A simple discord bot and website that allows Ben's facts to be managed and viewed",
 	"scripts": {
-		"dev": "concurrently 'vite dev' 'node -r dotenv/config src/discord-bot/server.js'",
+		"dev": "vite dev",
 		"build": "vite build",
 		"preview": "vite preview",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./jsconfig.json",
@@ -12,8 +12,8 @@
 		"test:unit": "vitest",
 		"lint": "prettier --plugin-search-dir . --check . && eslint .",
 		"format": "prettier --plugin-search-dir . --write .",
-		"ngrok": "ngrok http 8787",
-		"register": "node -r dotenv/config src/discord-bot/register.js"
+		"ngrok": "ngrok http 5173",
+		"register": "node -r dotenv/config src/routes/api/discord-bot/register.js"
 	},
 	"devDependencies": {
 		"@fontsource/fira-mono": "^5.0.8",
@@ -46,12 +46,8 @@
 	"type": "module",
 	"dependencies": {
 		"@vercel/kv": "^0.2.3",
-		"@whatwg-node/server": "^0.9.14",
 		"discord-interactions": "^3.4.0",
-		"isomorphic-fetch": "^3.0.0",
-		"itty-router": "^4.0.23",
 		"openai": "^4.11.1",
-		"rm": "^0.1.8",
 		"ulid": "^2.3.0"
 	}
 }

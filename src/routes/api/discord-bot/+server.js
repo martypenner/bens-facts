@@ -1,10 +1,7 @@
 /**
- * The core server.
+ * The core discord bot server.
  */
 
-import 'isomorphic-fetch';
-import { createServerAdapter } from '@whatwg-node/server';
-import { createServer } from 'node:http';
 import { ulid } from 'ulid';
 import {
 	InteractionResponseFlags,
@@ -14,7 +11,6 @@ import {
 	TextStyleTypes,
 	verifyKey
 } from 'discord-interactions';
-import { error, Router } from 'itty-router';
 import { kv } from '@vercel/kv';
 import { ADD_COMMAND, SELECT_COMMAND } from './commands.js';
 
@@ -36,8 +32,6 @@ function validateUserAccess(username) {
 		return new JsonResponse({ error: 'Invalid user access' }, { status: 403 });
 	}
 }
-
-const router = Router();
 
 async function getFacts() {
 	try {
@@ -82,7 +76,8 @@ async function updateFactsStatus(factIds) {
  * include a JSON payload described here:
  * https://discord.com/developers/docs/interactions/receiving-and-responding#interaction-object
  */
-router.post('/', async (request) => {
+/** @type {import('./$types').RequestHandler} */
+export async function POST({ request }) {
 	const { isValid, interaction } = await verifyDiscordRequest(request);
 	if (!isValid || !interaction) {
 		return new Response('Bad request signature.', { status: 401 });
@@ -200,8 +195,7 @@ router.post('/', async (request) => {
 
 	console.error('Unknown Type');
 	return new JsonResponse({ error: 'Unknown Type' }, { status: 400 });
-});
-router.all('*', () => new Response('Not Found.', { status: 404 }));
+}
 
 async function verifyDiscordRequest(request) {
 	const signature = request.headers.get('x-signature-ed25519');
@@ -215,12 +209,3 @@ async function verifyDiscordRequest(request) {
 
 	return { interaction: JSON.parse(body), isValid: true };
 }
-
-// create a @whatwg-node/server
-const ittyServer = createServerAdapter((request, env, ctx) => {
-	return router.handle(request, env, ctx).catch(error);
-});
-
-const httpServer = createServer(ittyServer);
-httpServer.listen(process.env.PORT ?? 8787);
-console.log('bot server started');
