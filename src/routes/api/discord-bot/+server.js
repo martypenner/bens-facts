@@ -2,6 +2,7 @@
  * The core discord bot server.
  */
 
+import { env } from '$env/dynamic/private';
 import { db, factsTable } from '$lib/db';
 import {
 	InteractionResponseFlags,
@@ -216,7 +217,7 @@ async function verifyDiscordRequest(request) {
 	const timestamp = request.headers.get('x-signature-timestamp');
 	const body = await request.text();
 	const isValidRequest =
-		signature && timestamp && verifyKey(body, signature, timestamp, process.env.DISCORD_PUBLIC_KEY);
+		signature && timestamp && verifyKey(body, signature, timestamp, env.DISCORD_PUBLIC_KEY);
 	if (!isValidRequest) {
 		return { isValid: false };
 	}

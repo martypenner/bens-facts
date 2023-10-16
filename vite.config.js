@@ -5,9 +5,7 @@ import 'dotenv/config';
 export default defineConfig({
 	plugins: [sveltekit()],
 	define: {
-		'process.env.POSTGRES_URL': JSON.stringify(process.env.POSTGRES_URL),
-		'process.env.MAX_GENERATED_FACTS': JSON.stringify(process.env.MAX_GENERATED_FACTS),
-		'process.env.BEN_FACT_WEIGHT': JSON.stringify(process.env.BEN_FACT_WEIGHT)
+		'process.env.POSTGRES_URL': JSON.stringify(process.env.POSTGRES_URL)
 	},
 	test: {
 		include: ['src/**/*.{test,spec}.{js,ts}']
