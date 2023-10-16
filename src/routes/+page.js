@@ -5,7 +5,7 @@ export const csr = false;
 
 const openai = new OpenAI();
 
-const MAX_GENERATED_FACTS = 200;
+const MAX_GENERATED_FACTS = Number(process.env.MAX_GENERATED_FACTS ?? 200);
 
 /** @type {import('./$types').PageLoad} */
 export async function load() {
