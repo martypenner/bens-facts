@@ -1,6 +1,5 @@
-import { kv } from '@vercel/kv';
+import { db, factsTable } from '$lib/db';
 import OpenAI from 'openai';
-import { ulid } from 'ulid';
 
 export const csr = false;
 
@@ -10,11 +9,11 @@ const MAX_GENERATED_FACTS = 200;
 
 /** @type {import('./$types').PageLoad} */
 export async function load() {
-	const facts = (await kv.scan(0, { match: 'fact:*', count: 10_000 }))[1];
-	const numFacts = facts.length;
+	const numFacts = (await db.query.facts.findMany()).length;
+
 	if (numFacts >= MAX_GENERATED_FACTS) {
 		try {
-			const { fact } = await getRandomFactWeightedForBen(facts);
+			const fact = await getRandomFactWeightedForBen();
 			return {
 				fact
 			};
@@ -41,16 +40,11 @@ export async function load() {
 	let fact = completion.choices[0].message.content;
 
 	try {
-		const id = ulid();
-		const factObj = {
-			id,
+		await db.insert(factsTable).values({
 			fact,
-			is_enabled: true
-		};
-		console.log('Fact being persisted:', factObj);
-
-		// Store the fact
-		await kv.hset(`fact:${id}`, factObj);
+			is_enabled: true,
+			from_ben: false
+		});
 	} catch (error) {
 		console.error('Error storing fact:', fact, error);
 	}
@@ -60,16 +54,21 @@ export async function load() {
 	};
 }
 
-async function getRandomFactWeightedForBen(facts) {
-	let randomFactId;
-	let fact;
-	let factFound = false;
-
-	do {
-		randomFactId = facts[Math.floor(Math.random() * facts.length)];
-		fact = await kv.hgetall(randomFactId);
-		factFound = fact?.is_enabled ?? false;
-	} while (!factFound);
+async function getRandomFactWeightedForBen() {
+	let fact = await db.query.facts.findFirst({
+		where: {
+			is_enabled: true,
+			from_ben: Math.random() < 0.75
+		}
+	});
+	if (fact == null) {
+		fact = await db.query.facts.findFirst({
+			where: {
+				is_enabled: true,
+				from_ben: false
+			}
+		});
+	}
 
 	return fact;
 }

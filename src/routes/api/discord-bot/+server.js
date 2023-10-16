@@ -2,7 +2,7 @@
  * The core discord bot server.
  */
 
-import { ulid } from 'ulid';
+import { db, factsTable } from '$lib/db';
 import {
 	InteractionResponseFlags,
 	InteractionResponseType,
@@ -11,7 +11,7 @@ import {
 	TextStyleTypes,
 	verifyKey
 } from 'discord-interactions';
-import { kv } from '@vercel/kv';
+import { ulid } from 'ulid';
 import { ADD_COMMAND, SELECT_COMMAND } from './commands.js';
 
 class JsonResponse extends Response {
@@ -35,18 +35,21 @@ function validateUserAccess(username) {
 
 async function getFacts() {
 	try {
-		const redisScan = (await kv.scan(0, { match: 'fact:*' }))[1] ?? [];
-		const facts = await Promise.all(redisScan.map(async (fact) => await kv.hgetall(fact)));
+		const facts = await db.query.facts.findMany();
 		return facts;
 	} catch (error) {
 		console.error('Error reading facts:', error);
-		return [];
+		throw new Error(error);
 	}
 }
 
-async function storeFact(id, fact, is_enabled = true) {
+async function storeFact(fact, is_enabled = true) {
 	try {
-		await kv.hset(`fact:${id}`, { id, fact, is_enabled, from_ben: true });
+		await db.insert(factsTable).values({
+			fact,
+			is_enabled,
+			from_ben: true
+		});
 	} catch (error) {
 		const message = 'Error writing facts:';
 		console.error(message, error);
@@ -56,14 +59,11 @@ async function storeFact(id, fact, is_enabled = true) {
 
 async function updateFactsStatus(factIds) {
 	try {
-		const existingFacts = await getFacts();
-		for (const { id, fact } of existingFacts) {
-			await kv.hset(`fact:${id}`, {
-				id,
-				fact,
-				is_enabled: factIds.includes(id)
-			});
-		}
+		// await db.insert(factsTable).values({
+		// 	fact,
+		// 	is_enabled,
+		// 	from_ben: true
+		// });
 	} catch (error) {
 		const message = 'Error writing facts:';
 		console.error(message, error);
@@ -178,8 +178,8 @@ export async function POST({ request }) {
 			return userAccessResponse;
 		}
 
-		const { custom_id: id, value: fact } = interaction.data.components[0].components[0];
-		await storeFact(id, fact);
+		const { value: fact } = interaction.data.components[0].components[0];
+		await storeFact(fact);
 
 		return new JsonResponse({
 			type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,

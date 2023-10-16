@@ -13,20 +13,22 @@
 		"lint": "prettier --plugin-search-dir . --check . && eslint .",
 		"format": "prettier --plugin-search-dir . --write .",
 		"ngrok": "ngrok http 5173",
-		"register": "node -r dotenv/config src/routes/api/discord-bot/register.js"
+		"register": "node -r dotenv/config src/routes/api/discord-bot/register.js",
+		"generate": "drizzle-kit generate:pg --schema=./src/lib/db.ts",
+		"migrate": "bun migrate.ts"
 	},
 	"devDependencies": {
 		"@fontsource/fira-mono": "^5.0.8",
 		"@fontsource/karla": "^5.0.15",
-		"@neoconfetti/svelte": "^1.0.0",
-		"@playwright/test": "^1.38.1",
 		"@sveltejs/adapter-vercel": "^3.0.3",
 		"@sveltejs/kit": "^1.25.2",
 		"@types/cookie": "^0.5.2",
+		"@types/node": "^20.8.6",
 		"c8": "^8.0.1",
 		"chai": "^4.3.10",
 		"concurrently": "^8.2.1",
 		"dotenv": "^16.3.1",
+		"drizzle-kit": "^0.19.13",
 		"eslint": "^8.51.0",
 		"eslint-config-prettier": "^9.0.0",
 		"eslint-plugin-prettier": "^5.0.1",
@@ -45,9 +47,11 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"@vercel/kv": "^0.2.3",
+		"@vercel/postgres": "^0.5.0",
 		"discord-interactions": "^3.4.0",
+		"drizzle-orm": "^0.28.6",
 		"openai": "^4.11.1",
+		"pg": "^8.11.3",
 		"ulid": "^2.3.0"
 	}
 }
