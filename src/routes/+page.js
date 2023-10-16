@@ -1,4 +1,5 @@
 import { db, factsTable } from '$lib/db';
+import { eq } from 'drizzle-orm';
 import OpenAI from 'openai';
 
 export const csr = false;
@@ -6,6 +7,7 @@ export const csr = false;
 const openai = new OpenAI();
 
 const MAX_GENERATED_FACTS = Number(process.env.MAX_GENERATED_FACTS ?? 200);
+const BEN_FACT_WEIGHT = Number(process.env.BEN_FACT_WEIGHT ?? 0.75);
 
 /** @type {import('./$types').PageLoad} */
 export async function load() {
@@ -55,20 +57,17 @@ export async function load() {
 }
 
 async function getRandomFactWeightedForBen() {
-	let fact = await db.query.facts.findFirst({
-		where: {
-			is_enabled: true,
-			from_ben: Math.random() < 0.75
-		}
-	});
-	if (fact == null) {
-		fact = await db.query.facts.findFirst({
-			where: {
-				is_enabled: true,
-				from_ben: false
+	let facts = await db.select().from(factsTable).where(eq(factsTable.is_enabled, true)).limit(10);
+	let fact = facts[Math.floor(Math.random() * facts.length)];
+
+	if (Math.random() < BEN_FACT_WEIGHT && !fact.from_ben) {
+		for (const otherFact of facts) {
+			if (otherFact.from_ben) {
+				fact = otherFact;
+				break;
 			}
-		});
+		}
 	}
 
-	return fact;
+	return fact?.fact;
 }
