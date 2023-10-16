@@ -46,7 +46,7 @@ async function getFacts() {
 
 async function storeFact(id, fact, is_enabled = true) {
 	try {
-		await kv.hset(`fact:${id}`, { id, fact, is_enabled });
+		await kv.hset(`fact:${id}`, { id, fact, is_enabled, from_ben: true });
 	} catch (error) {
 		const message = 'Error writing facts:';
 		console.error(message, error);
