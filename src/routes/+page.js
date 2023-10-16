@@ -10,15 +10,18 @@ const MAX_GENERATED_FACTS = 200;
 
 /** @type {import('./$types').PageLoad} */
 export async function load() {
-	// - (later) return only ones that this cookie hasn't seen before
-
-	const facts = (await kv.scan(0, { match: 'fact:*' }))[1];
+	const facts = (await kv.scan(0, { match: 'fact:*', count: 10_000 }))[1];
 	const numFacts = facts.length;
 	if (numFacts >= MAX_GENERATED_FACTS) {
-		const { fact } = await getRandomFact(facts);
-		return {
-			fact
-		};
+		try {
+			const { fact } = await getRandomFactWeightedForBen(facts);
+			return {
+				fact
+			};
+		} catch (error) {
+			console.error(error);
+			// let the script continue as usual
+		}
 	}
 
 	let completion = await openai.chat.completions.create({
@@ -57,14 +60,16 @@ export async function load() {
 	};
 }
 
-async function getRandomFact(facts) {
+async function getRandomFactWeightedForBen(facts) {
 	let randomFactId;
 	let fact;
+	let factFound = false;
 
 	do {
 		randomFactId = facts[Math.floor(Math.random() * facts.length)];
 		fact = await kv.hgetall(randomFactId);
-	} while (!fact?.is_enabled);
+		factFound = fact?.is_enabled ?? false;
+	} while (!factFound);
 
 	return fact;
 }
