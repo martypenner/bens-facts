@@ -1,4 +1,3 @@
-import { env } from '$env/dynamic/private';
 import { db, factsTable } from '$lib/db';
 import { eq } from 'drizzle-orm';
 import OpenAI from 'openai';
@@ -7,8 +6,8 @@ export const csr = false;
 
 const openai = new OpenAI();
 
-const MAX_GENERATED_FACTS = Number(env.MAX_GENERATED_FACTS ?? 200);
-const BEN_FACT_WEIGHT = Number(env.BEN_FACT_WEIGHT ?? 0.75);
+const MAX_GENERATED_FACTS = Number(process.env.MAX_GENERATED_FACTS ?? 200);
+const BEN_FACT_WEIGHT = Number(process.env.BEN_FACT_WEIGHT ?? 0.75);
 
 /** @type {import('./$types').PageLoad} */
 export async function load() {
