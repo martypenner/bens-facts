@@ -1,57 +1,25 @@
 {
-	"name": "sveltekit-2",
-	"version": "0.0.1",
-	"description": "A simple discord bot and website that allows Ben's facts to be managed and viewed",
+	"name": "bens-facts",
+	"version": "0.0.0",
+	"private": true,
+	"type": "module",
 	"scripts": {
-		"dev": "vite dev",
-		"build": "vite build",
-		"preview": "vite preview",
-		"check": "svelte-kit sync && svelte-check --tsconfig ./jsconfig.json",
-		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./jsconfig.json --watch",
-		"test": "playwright test && c8 mocha test",
-		"test:unit": "vitest",
-		"lint": "prettier --plugin-search-dir . --check . && eslint .",
-		"format": "prettier --plugin-search-dir . --write .",
-		"ngrok": "ngrok http 5173",
-		"register": "node -r dotenv/config src/routes/api/discord-bot/register.js",
-		"generate": "drizzle-kit generate:pg --schema=./src/lib/db.ts",
-		"migrate": "bun migrate.ts"
+		"dev": "concurrently -n 'sst,web' 'sst dev' 'cd packages/website && $npm_execpath dev'",
+		"build": "sst build",
+		"deploy": "sst deploy --stage prod",
+		"remove": "sst remove",
+		"console": "sst console",
+		"typecheck": "tsc --noEmit"
 	},
 	"devDependencies": {
-		"@fontsource/fira-mono": "^5.0.8",
-		"@fontsource/karla": "^5.0.15",
-		"@sveltejs/adapter-vercel": "^3.0.3",
-		"@sveltejs/kit": "^1.25.2",
-		"@types/cookie": "^0.5.2",
-		"@types/node": "^20.8.6",
-		"c8": "^8.0.1",
-		"chai": "^4.3.10",
-		"concurrently": "^8.2.1",
-		"dotenv": "^16.3.1",
-		"drizzle-kit": "^0.19.13",
-		"eslint": "^8.51.0",
-		"eslint-config-prettier": "^9.0.0",
-		"eslint-plugin-prettier": "^5.0.1",
-		"eslint-plugin-svelte": "^2.34.0",
-		"mocha": "^10.2.0",
-		"ngrok": "^5.0.0-beta.2",
-		"prettier": "^3.0.3",
-		"prettier-plugin-svelte": "^3.0.3",
-		"sinon": "^16.1.0",
-		"svelte": "^4.2.1",
-		"svelte-check": "^3.5.2",
-		"typescript": "^5.2.2",
-		"vite": "^4.4.11",
-		"vitest": "^0.34.6",
-		"web-vitals": "^3.5.0"
+		"@tsconfig/node18": "^18.2.2",
+		"aws-cdk-lib": "2.110.1",
+		"concurrently": "^8.2.2",
+		"constructs": "10.3.0",
+		"sst": "^2.39.13",
+		"typescript": "^5.3.3"
 	},
-	"type": "module",
-	"dependencies": {
-		"@vercel/postgres": "^0.5.0",
-		"discord-interactions": "^3.4.0",
-		"drizzle-orm": "^0.28.6",
-		"openai": "^4.11.1",
-		"pg": "^8.11.3",
-		"ulid": "^2.3.0"
-	}
+	"workspaces": [
+		"packages/*"
+	]
 }

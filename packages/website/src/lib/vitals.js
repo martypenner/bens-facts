@@ -1,6 +1,6 @@
 import { onCLS, onFCP, onFID, onLCP, onTTFB } from 'web-vitals';
 
-const vitalsUrl = 'https://vitals.vercel-analytics.com/v1/vitals';
+const vitalsUrl = '';
 
 function getConnectionSpeed() {
 	// @ts-ignore
@@ -35,15 +35,15 @@ function sendToAnalytics(metric, options) {
 		// This content type is necessary for `sendBeacon`
 		type: 'application/x-www-form-urlencoded'
 	});
-	if (navigator.sendBeacon) {
-		navigator.sendBeacon(vitalsUrl, blob);
-	} else
-		fetch(vitalsUrl, {
-			body: blob,
-			method: 'POST',
-			credentials: 'omit',
-			keepalive: true
-		});
+	// if (navigator.sendBeacon) {
+	// 	navigator.sendBeacon(vitalsUrl, blob);
+	// } else
+	// 	fetch(vitalsUrl, {
+	// 		body: blob,
+	// 		method: 'POST',
+	// 		credentials: 'omit',
+	// 		keepalive: true
+	// 	});
 }
 
 /**

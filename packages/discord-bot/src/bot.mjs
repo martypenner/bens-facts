@@ -2,38 +2,34 @@
  * The core discord bot server.
  */
 
-import { db, factsTable } from '$lib/db';
+import { factsTable, getDb } from '@ben-facts/db';
 import {
 	InteractionResponseFlags,
 	InteractionResponseType,
 	InteractionType,
 	MessageComponentTypes,
 	TextStyleTypes,
-	verifyKey
+	verifyKey,
 } from 'discord-interactions';
+import { Config } from 'sst/node/config';
 import { ulid } from 'ulid';
-import { ADD_COMMAND, SELECT_COMMAND } from './commands.js';
-
-class JsonResponse extends Response {
-	constructor(body, init) {
-		const jsonBody = JSON.stringify(body);
-		init = init || {
-			headers: {
-				'content-type': 'application/json;charset=UTF-8'
-			}
-		};
-		super(jsonBody, init);
-	}
-}
+import { ADD_COMMAND, SELECT_COMMAND } from './commands.mjs';
 
 function validateUserAccess(username) {
 	if (!['LuggageMoose', 'encryptoknight'].includes(username)) {
 		console.error('Invalid user access');
-		return new JsonResponse({ error: 'Invalid user access' }, { status: 403 });
+		return {
+			statusCode: 403,
+			body: {
+				error: 'Invalid user access',
+			},
+		};
 	}
 }
 
 async function getFacts() {
+	const db = getDb();
+
 	try {
 		const facts = await db.query.facts.findMany();
 		return facts;
@@ -44,11 +40,13 @@ async function getFacts() {
 }
 
 async function storeFact(fact, is_enabled = true) {
+	const db = getDb();
+
 	try {
 		await db.insert(factsTable).values({
 			fact,
 			is_enabled,
-			from_ben: true
+			from_ben: true,
 		});
 	} catch (error) {
 		const message = 'Error writing facts:';
@@ -76,19 +74,23 @@ async function updateFactsStatus(factIds) {
  * include a JSON payload described here:
  * https://discord.com/developers/docs/interactions/receiving-and-responding#interaction-object
  */
-/** @type {import('./$types').RequestHandler} */
-export async function POST({ request }) {
+export async function handler(request) {
 	const { isValid, interaction } = await verifyDiscordRequest(request);
 	if (!isValid || !interaction) {
-		return new Response('Bad request signature.', { status: 401 });
+		return {
+			statusCode: 401,
+			body: {
+				error: 'Bad request signature.',
+			},
+		};
 	}
 
 	if (interaction.type === InteractionType.PING) {
 		// The `PING` message is used during the initial webhook handshake, and is
 		// required to configure the webhook in the developer portal.
-		return new JsonResponse({
-			type: InteractionResponseType.PONG
-		});
+		return {
+			type: InteractionResponseType.PONG,
+		};
 	}
 
 	if (interaction.type === InteractionType.APPLICATION_COMMAND) {
@@ -101,7 +103,7 @@ export async function POST({ request }) {
 		// Most user commands will come as `APPLICATION_COMMAND`.
 		switch (interaction.data.name.toLowerCase()) {
 			case ADD_COMMAND.name.toLowerCase(): {
-				return new JsonResponse({
+				return {
 					type: InteractionResponseType.MODAL,
 					data: {
 						custom_id: 'fact_modal',
@@ -117,13 +119,13 @@ export async function POST({ request }) {
 										label: "A cool Ben's Fact",
 										min_length: 1,
 										max_length: 1000,
-										required: true
-									}
-								]
-							}
-						]
-					}
-				});
+										required: true,
+									},
+								],
+							},
+						],
+					},
+				};
 			}
 			case SELECT_COMMAND.name.toLowerCase(): {
 				// Chunk facts into multiple selects
@@ -154,22 +156,25 @@ export async function POST({ request }) {
 								placeholder: "Choose which of Ben's facts will make the cut!",
 								min_values: 0,
 								max_values: options.length,
-								options
-							}
-						]
+								options,
+							},
+						],
 					};
 				});
 
-				return new JsonResponse({
+				return {
 					type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
 					data: {
 						components,
-						flags: InteractionResponseFlags.EPHEMERAL
-					}
-				});
+						flags: InteractionResponseFlags.EPHEMERAL,
+					},
+				};
 			}
 			default:
-				return new JsonResponse({ error: 'Unknown Type' }, { status: 400 });
+				return {
+					statusCody: 400,
+					body: { error: 'Unknown Type' },
+				};
 		}
 	} else if (interaction.type === InteractionType.MODAL_SUBMIT) {
 		const username = interaction.member.user.username;
@@ -181,13 +186,13 @@ export async function POST({ request }) {
 		const { value: fact } = interaction.data.components[0].components[0];
 		await storeFact(fact);
 
-		return new JsonResponse({
+		return {
 			type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
 			data: {
 				content: 'Fact added! They better hold on to their butts...',
-				flags: InteractionResponseFlags.EPHEMERAL
-			}
-		});
+				flags: InteractionResponseFlags.EPHEMERAL,
+			},
+		};
 	} else if (interaction.type === InteractionType.MESSAGE_COMPONENT) {
 		const username = interaction.member.user.username;
 		const userAccessResponse = validateUserAccess(username);
@@ -198,25 +203,32 @@ export async function POST({ request }) {
 		const factIds = interaction.data.values;
 		await updateFactsStatus(factIds);
 
-		return new JsonResponse({
+		return {
 			type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
 			data: {
 				content: "Facts updated! Make 'em squirm",
-				flags: InteractionResponseFlags.EPHEMERAL
-			}
-		});
+				flags: InteractionResponseFlags.EPHEMERAL,
+			},
+		};
 	}
 
 	console.error('Unknown Type');
-	return new JsonResponse({ error: 'Unknown Type' }, { status: 400 });
+	return {
+		statusCode: 400,
+		body: {
+			error: 'Unknown Type',
+		},
+	};
 }
 
 async function verifyDiscordRequest(request) {
-	const signature = request.headers.get('x-signature-ed25519');
-	const timestamp = request.headers.get('x-signature-timestamp');
-	const body = await request.text();
+	const signature = request.headers['x-signature-ed25519'];
+	const timestamp = request.headers['x-signature-timestamp'];
+	const body = request.body;
 	const isValidRequest =
-		signature && timestamp && verifyKey(body, signature, timestamp, process.env.DISCORD_PUBLIC_KEY);
+		signature &&
+		timestamp &&
+		verifyKey(body.toString(), signature, timestamp, Config.DISCORD_PUBLIC_KEY);
 	if (!isValidRequest) {
 		return { isValid: false };
 	}

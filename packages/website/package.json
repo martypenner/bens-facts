@@ -1,0 +1,51 @@
+{
+	"name": "@ben-facts/website",
+	"version": "0.0.1",
+	"description": "A simple discord bot and website that allows Ben's facts to be managed and viewed",
+	"scripts": {
+		"dev": "sst bind vite dev",
+		"build": "sst bind vite build",
+		"preview": "vite preview",
+		"check": "svelte-kit sync && svelte-check --tsconfig ./jsconfig.json",
+		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./jsconfig.json --watch",
+		"test": "playwright test && c8 mocha test",
+		"test:unit": "vitest",
+		"lint": "prettier --plugin-search-dir . --check . && eslint .",
+		"format": "prettier --plugin-search-dir . --write .",
+		"ngrok": "ngrok http 5173"
+	},
+	"type": "module",
+	"devDependencies": {
+		"@ben-facts/db": "*",
+		"@ben-facts/discord-bot": "*",
+		"@fontsource/fira-mono": "^5.0.8",
+		"@fontsource/karla": "^5.0.15",
+		"@sveltejs/kit": "^1.25.2",
+		"@types/cookie": "^0.5.2",
+		"@types/node": "^20.8.6",
+		"aws-cdk-lib": "2.110.1",
+		"c8": "^8.0.1",
+		"constructs": "10.3.0",
+		"eslint": "^8.51.0",
+		"eslint-config-prettier": "^9.0.0",
+		"eslint-plugin-prettier": "^5.0.1",
+		"eslint-plugin-svelte": "^2.34.0",
+		"ngrok": "^5.0.0-beta.2",
+		"prettier": "^3.0.3",
+		"prettier-plugin-svelte": "^3.0.3",
+		"sst": "^2.39.11",
+		"svelte": "^4.2.1",
+		"svelte-check": "^3.5.2",
+		"svelte-kit-sst": "^2.39.11",
+		"typescript": "^5.2.2",
+		"vite": "^4.4.11",
+		"vitest": "^0.34.6",
+		"web-vitals": "^3.5.0"
+	},
+	"dependencies": {
+		"@aws-sdk/credential-providers": "^3.501.0",
+		"drizzle-orm": "^0.28.6",
+		"openai": "^4.11.1",
+		"ulid": "^2.3.0"
+	}
+}

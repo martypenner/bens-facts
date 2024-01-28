@@ -1,0 +1,26 @@
+{
+	"name": "@ben-facts/discord-bot",
+	"version": "0.0.0",
+	"type": "module",
+	"exports": {
+		"./commands": {
+			"import": "./src/commands.js"
+		}
+	},
+	"scripts": {
+		"test": "sst bind vitest",
+		"typecheck": "tsc -noEmit",
+		"register": "node src/register.js"
+	},
+	"devDependencies": {
+		"@types/node": "^20.11.8",
+		"sst": "^2.39.13",
+		"vitest": "^1.2.2"
+	},
+	"dependencies": {
+		"@ben-facts/db": "*",
+		"discord-interactions": "^3.4.0",
+		"ulid": "^2.3.0",
+		"zod": "^3.22.4"
+	}
+}
