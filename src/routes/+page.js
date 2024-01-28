@@ -37,7 +37,7 @@ export async function load() {
 				content: 'give me a ben fact'
 			}
 		],
-		model: 'gpt-4'
+		model: 'gpt-4-0125-preview'
 	});
 	let fact = completion.choices[0].message.content;
 
