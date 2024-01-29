@@ -93,6 +93,7 @@ export default {
 						certificate,
 					},
 				},
+				warm: 1,
 				bind: [db, MAX_GENERATED_FACTS, BEN_FACT_WEIGHT, OPENAI_API_KEY],
 			});
 
