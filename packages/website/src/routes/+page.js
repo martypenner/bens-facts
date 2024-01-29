@@ -64,7 +64,7 @@ async function getRandomFactWeightedForBen() {
 	const BEN_FACT_WEIGHT = Number(Config.BEN_FACT_WEIGHT);
 	const db = getDb();
 
-	let facts = await db.select().from(factsTable).where(eq(factsTable.is_enabled, true)).limit(10);
+	let facts = await db.select().from(factsTable).where(eq(factsTable.is_enabled, true));
 	let fact = facts[Math.floor(Math.random() * facts.length)];
 
 	if (Math.random() < BEN_FACT_WEIGHT && !fact.from_ben) {
