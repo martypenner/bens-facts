@@ -95,7 +95,6 @@ export default {
 				},
 				warm: 2,
 				bind: [db, MAX_GENERATED_FACTS, BEN_FACT_WEIGHT, OPENAI_API_KEY],
-				memorySize: 512,
 			});
 
 			stack.addOutputs({
