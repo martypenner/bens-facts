@@ -1,0 +1,10 @@
+{
+	"name": "@bens-facts/types",
+	"private": true,
+	"sideEffects": false,
+	"type": "module",
+	"types": "index.d.ts",
+	"dependencies": {
+		"@tsconfig/node18": "^18.2.2"
+	}
+}

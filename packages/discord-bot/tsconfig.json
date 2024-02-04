@@ -1,14 +1,6 @@
 {
 	"extends": "@tsconfig/node18/tsconfig.json",
 	"compilerOptions": {
-		"allowJs": true,
-		"module": "esnext",
-		"moduleResolution": "node",
-		"baseUrl": ".",
-		"paths": {
-			"@ben-facts/db/*": ["../db/*"],
-			"@ben-facts/discord-bot/*": ["../discord-bot/*"],
-			"@ben-facts/website/*": ["../website/*"]
-		}
+		"esModuleInterop": true
 	}
 }

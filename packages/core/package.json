@@ -1,0 +1,20 @@
+{
+	"name": "@bens-facts/core",
+	"version": "0.0.1",
+	"type": "module",
+	"module": "./src/client.ts",
+	"types": "./src/client.ts",
+	"scripts": {},
+	"devDependencies": {
+		"@bens-facts/types": "workspace:*",
+		"@cloudflare/workers-types": "^4.20240129.0",
+		"@tsconfig/node18": "^18.2.2",
+		"drizzle-kit": "^0.19.13",
+		"typescript": "^5.2.2",
+		"wrangler": "^3.0.0"
+	},
+	"dependencies": {
+		"drizzle-orm": "^0.28.6",
+		"openai": "^4.26.0"
+	}
+}

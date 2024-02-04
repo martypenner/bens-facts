@@ -1,17 +1,10 @@
-.DS_Store
 node_modules
-/build
-/.svelte-kit
-/package
-.env
-.env.*
-!.env.example
-.output
-vite.config.js.timestamp-*
-vite.config.ts.timestamp-*
-/test-results/
-/playwright-report/
-/playwright/.cache/
 
-# sst
-.sst
+/.cache
+/.wrangler
+/functions/\[\[path\]\].js
+/functions/\[\[path\]\].js.map
+/functions/metafile.*
+/functions/version.txt
+/public/build
+.dev.vars

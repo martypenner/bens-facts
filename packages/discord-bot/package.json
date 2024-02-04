@@ -1,26 +1,34 @@
 {
-	"name": "@ben-facts/discord-bot",
+	"name": "@bens-facts/discord-bot",
 	"version": "0.0.0",
 	"type": "module",
 	"exports": {
 		"./commands": {
-			"import": "./src/commands.js"
+			"import": "./src/commands.ts"
 		}
 	},
 	"scripts": {
-		"test": "sst bind vitest",
+		"dev": "wrangler dev",
+		"ngrok": "ngrok http 8787",
+		"lint": "eslint '**/*.js'",
 		"typecheck": "tsc -noEmit",
-		"register": "node src/register.js"
+		"register": "bun src/register.ts",
+		"deploy": "wrangler deploy"
 	},
 	"devDependencies": {
+		"@bens-facts/core": "workspace:*",
+		"@bens-facts/types": "workspace:*",
+		"@tsconfig/node18": "^18.2.2",
 		"@types/node": "^20.11.8",
-		"sst": "^2.39.13",
-		"vitest": "^1.2.2"
+		"dotenv": "^16.4.1",
+		"ngrok": "5.0.0-beta.2",
+		"vitest": "^1.2.2",
+		"wrangler": "^3.26.0"
 	},
 	"dependencies": {
-		"@ben-facts/db": "*",
 		"discord-interactions": "^3.4.0",
-		"ulid": "^2.3.0",
+		"hono": "^3.12.10",
+		"nanoid": "^5.0.5",
 		"zod": "^3.22.4"
 	}
 }

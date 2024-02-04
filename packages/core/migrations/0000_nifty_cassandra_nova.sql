@@ -1,0 +1,6 @@
+CREATE TABLE IF NOT EXISTS facts (
+  id INTEGER PRIMARY KEY,
+  fact TEXT NOT NULL,
+  from_ben INTEGER NOT NULL DEFAULT 1 CHECK (from_ben IN (0, 1)),
+  is_enabled INTEGER NOT NULL DEFAULT 1 CHECK (is_enabled IN (0, 1))
+);

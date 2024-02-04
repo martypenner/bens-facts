@@ -1,15 +1,13 @@
-# dependencies
-node_modules
-
-# sst
-.sst
-.build
-
-# opennext
-.open-next
-
-# misc
 .DS_Store
-
-# local env files
-.env*.local
+node_modules
+.wrangler
+.turbo
+*.log
+dist
+dist-ssr
+*.local
+.env
+.dev.vars
+.cache
+server/dist
+public/dist

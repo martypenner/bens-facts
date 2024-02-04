@@ -1,26 +1,22 @@
-# SvelteKit Demo app
+# Welcome to Remix!
 
-The official demo app for SvelteKit.
+- [Remix Docs](https://remix.run/docs)
 
-## Deploy Your Own
+## Development
 
-## Developing
+You will be utilizing Wrangler for local development to emulate the Cloudflare runtime. This is already wired up in your package.json as the `dev` script:
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
-
-```bash
+```sh
+# start the remix dev server and wrangler
 npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
 ```
 
-## Building
+Open up [http://127.0.0.1:8788](http://127.0.0.1:8788) and you should be ready to go!
 
-To create a production version of your app:
+## Deployment
 
-```bash
-npm run build
-```
+Cloudflare Pages are currently only deployable through their Git provider integrations.
 
-You can preview the production build with `npm run preview`.
+If you don't already have an account, then [create a Cloudflare account here](https://dash.cloudflare.com/sign-up/pages) and after verifying your email address with Cloudflare, go to your dashboard and follow the [Cloudflare Pages deployment guide](https://developers.cloudflare.com/pages/framework-guides/deploy-anything).
+
+Configure the "Build command" should be set to `npm run build`, and the "Build output directory" should be set to `public`.
