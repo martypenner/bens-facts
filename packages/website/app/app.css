@@ -1,3 +1,34 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@keyframes move {
+	0%,
+	100% {
+		transform: translateX(0);
+	}
+	50% {
+		transform: translateX(-5px);
+	}
+}
+
+@keyframes wiggle {
+	0%,
+	100% {
+		transform: rotate(0);
+	}
+	25% {
+		transform: rotate(3deg);
+	}
+	75% {
+		transform: rotate(-3deg);
+	}
+}
+
+.snail {
+	animation: move 5s ease-in-out infinite;
+}
+
+.snail__antenna {
+	animation: wiggle 3s ease-in-out infinite;
+}
