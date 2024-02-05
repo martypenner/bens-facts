@@ -5,10 +5,10 @@
 @keyframes move {
 	0%,
 	100% {
-		transform: translateX(0);
+		translate: 0;
 	}
 	50% {
-		transform: translateX(-5px);
+		translate: -5px;
 	}
 }
 
@@ -17,18 +17,25 @@
 	100% {
 		transform: rotate(0);
 	}
-	25% {
-		transform: rotate(3deg);
-	}
-	75% {
-		transform: rotate(-3deg);
+	50% {
+		transform: rotate(5deg);
 	}
 }
 
-.snail {
+.move {
 	animation: move 5s ease-in-out infinite;
 }
 
-.snail__antenna {
+.squish {
+	transition: transform 250ms ease-in-out;
+}
+
+:active > .squish,
+:focus > .squish {
+	transform: scale(1.15);
+}
+
+.wiggle {
+	transform-origin: bottom;
 	animation: wiggle 3s ease-in-out infinite;
 }
