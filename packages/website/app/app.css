@@ -27,12 +27,16 @@
 }
 
 .squish {
-	transition: transform 250ms ease-in-out;
+	transition: transform 150ms ease-in-out;
 }
 
-:active > .squish,
-:focus > .squish {
+:focus > .squish,
+:hover > .squish {
 	transform: scale(1.15);
+}
+
+:active > .squish {
+	transform: scaleX(1.35) scaleY(1.05);
 }
 
 .wiggle {
